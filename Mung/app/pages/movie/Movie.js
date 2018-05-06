@@ -11,6 +11,8 @@ import {
     TouchableOpacity,
     Platform,
 } from 'react-native'
+import JPushModule from 'jpush-react-native';
+// import CodePush from "react-native-code-push"
 import {MainBg, WhiteTextColor, GrayWhiteColor, Translucent, White} from '../basestyle/BaseStyle'
 import Swiper from 'react-native-swiper'
 import {show} from '../../utils/ToastUtils'
@@ -27,6 +29,11 @@ import NaviBarView from "../../widget/NaviBarView";
 
 const itemHight = 200;
 const moviesCount = 20;
+
+const receiveCustomMsgEvent = 'receivePushMsg'
+const receiveNotificationEvent = 'receiveNotification'
+const openNotificationEvent = 'openNotification'
+const getRegistrationIdEvent = 'getRegistrationId'
 
 export default class Movie extends Component {
 
@@ -99,6 +106,26 @@ export default class Movie extends Component {
     }
 
     componentDidMount() {
+        JPushModule.addnetworkDidLoginListener(() => {
+            console.log('连接已登录')
+         })
+    JPushModule.getRegistrationID((registrationid)=>{
+        // this.setState({regid: registrationid});
+        console.log('registrationid=',registrationid);
+    })
+        //打开通知 iOS 10 及以上的系统 \ 在前台收到推送
+    JPushModule.addReceiveOpenNotificationListener((result) => {
+        console.log('打开通知==', result)
+    })
+    //iOS 9 以下的系统 
+    JPushModule.addReceiveNotificationListener((result) => {
+      console.log('打开通知==', result)
+    })
+
+    //应用没有启动情况 
+    JPushModule.addOpenNotificationLaunchAppListener((result) => {
+      console.log('result = ' + result)
+    })
         //还是有白屏看来方法后只能这样，后期有时间再改进
         this.timer = setTimeout(()=>{
             SplashScreen.hide()
@@ -107,6 +134,10 @@ export default class Movie extends Component {
 
     componentWillUnmount() {
         this.timer && clearTimeout(this.timer);
+        JPushModule.removenetworkDidLoginListener();
+        JPushModule.removeReceiveNotificationListener();
+        JPushModule.removeReceiveOpenNotificationListener();
+        JPushModule.removeOpenNotificationLaunchAppEventListener();
     }
 
     requestData() {

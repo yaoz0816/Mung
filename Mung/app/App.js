@@ -2,6 +2,7 @@ import {
     StackNavigator,
     TabNavigator,
 } from 'react-navigation'
+import JPushModule from 'jpush-react-native';
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator'
 import Movie from './pages/movie/Movie'
 import MovieDetail from './pages/movie/MovieDetail'
@@ -10,7 +11,10 @@ import ImageDetailBrower from './pages/movie/ImageDetailBrower'
 import Theme from './pages/setting/Theme'
 import Search from './pages/movie/Search'
 import {MainBg,MainColor,GrayColor} from './pages/basestyle/BaseStyle'
-
+JPushModule.getRegistrationID((registrationid)=>{
+    // this.setState({regid: registrationid});
+    console.log('registrationid=',registrationid);
+  })
 /*
 * 实现底部Tab
 * */
