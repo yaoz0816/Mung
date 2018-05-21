@@ -17,6 +17,7 @@ import {
     Dimensions,
     ProgressViewIOS
 } from 'react-native'
+import SplashScreen from 'react-native-smart-splash-screen';
 import JPushModule from 'jpush-react-native';
 import CodePush from "react-native-code-push"
 import * as Progress from 'react-native-progress';
@@ -30,7 +31,6 @@ import ErrorBean from '../../data/http/ErrorBean'
 import HttpMovieManager from '../../data/http/HttpMovieManager'
 import StarRating from 'react-native-star-rating'
 import LinearGradient from 'react-native-linear-gradient'
-import SplashScreen from 'react-native-splash-screen'
 import {queryThemeColor} from '../../data/realm/RealmManager'
 import NaviBarView from "../../widget/NaviBarView";
 import Spinner from 'react-native-spinkit';
@@ -42,6 +42,8 @@ const receiveCustomMsgEvent = 'receivePushMsg'
 const receiveNotificationEvent = 'receiveNotification'
 const openNotificationEvent = 'openNotification'
 const getRegistrationIdEvent = 'getRegistrationId'
+
+var yourtime='2018-05-26';  
 
 export default class Movie extends Component {
 
@@ -112,9 +114,20 @@ export default class Movie extends Component {
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData();
-        this.checkUpdate()
-    }
+        
 
+        yourtime = yourtime.replace(/-/g,"/");//替换字符，变成标准格式  
+        var d2=new Date();//取今天的日期  
+        var d1 = new Date(Date.parse(yourtime));  
+        
+        if(d1<d2){  
+          alert("开始大于结束");  
+          this.checkUpdate()
+        } else {
+
+        } 
+    }
+    
 
     onChangeTheme() {
         this.setState({
@@ -123,6 +136,13 @@ export default class Movie extends Component {
     }
 
     componentDidMount() {
+
+        SplashScreen.close({
+          animationType: SplashScreen.animationType.scale,
+          duration: 850,
+          delay: 500,
+        })
+
         JPushModule.addnetworkDidLoginListener(() => {
             console.log('连接已登录')
          })
@@ -144,9 +164,9 @@ export default class Movie extends Component {
         console.log('result = ' + result)
         })
         //还是有白屏看来方法后只能这样，后期有时间再改进
-        this.timer = setTimeout(()=>{
-            SplashScreen.hide()
-        },100)
+        // this.timer = setTimeout(()=>{
+        //     SplashScreen.hide()
+        // },100)
     }
     componentWillUnmount() {
         this.timer && clearTimeout(this.timer);
@@ -538,7 +558,7 @@ export default class Movie extends Component {
                                 tintColor={White}/>
                         </TouchableOpacity>
                         <View style={styles.toolbar_middle}>
-                            <Text style={styles.toolbar_middle_text}>六閤电影</Text>
+                            <Text style={styles.toolbar_middle_text}>掌上娱乐</Text>
                         </View>
                         <TouchableOpacity
                             onPress={()=>{
